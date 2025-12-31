@@ -4,6 +4,38 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { insertQuizQuestionSchema } from "@shared/schema";
 import { z } from "zod";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+
+const uploadDir = path.join(process.cwd(), "client", "public", "images");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      const ext = path.extname(file.originalname);
+      cb(null, "kanji-" + uniqueSuffix + ext);
+    },
+  }),
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed"));
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
 
 export async function registerRoutes(
   httpServer: Server,
@@ -106,6 +138,20 @@ export async function registerRoutes(
       return res.status(404).json({ message: "Quiz not found" });
     }
     res.json({ success: true });
+  });
+
+  app.post("/api/upload", (req, res, next) => {
+    const passcode = req.headers["x-passcode"];
+    if (passcode !== "1234") {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    next();
+  }, upload.single("image"), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const imagePath = "/images/" + req.file.filename;
+    res.json({ imagePath });
   });
 
   return httpServer;

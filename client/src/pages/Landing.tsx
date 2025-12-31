@@ -137,7 +137,7 @@ export default function Landing() {
                 data-testid="button-view-logs"
               >
                 <BookOpen className="w-5 h-5" />
-                {language === "ja" ? "進捗を見る" : "View Progress Log"}
+                {language === "ja" ? "保護者画面" : "Parent Screen"}
               </button>
             </motion.div>
           ) : (

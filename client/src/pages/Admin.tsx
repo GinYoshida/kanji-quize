@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuizzes, useCreateQuiz, useUpdateQuiz, useDeleteQuiz } from "@/hooks/use-quizzes";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Plus, Trash2, Save, X, Image } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Save, X, Image, Upload } from "lucide-react";
 import type { QuizQuestion, InsertQuizQuestion } from "@shared/schema";
 
 const AVAILABLE_KANJI = ["木", "山", "川", "日", "月", "火", "水", "金", "土", "人", "口", "目"];
@@ -19,6 +19,8 @@ export default function Admin() {
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<Partial<InsertQuizQuestion>>({
     kanji: "木",
     options: ["木", "山", "川"],
@@ -96,6 +98,39 @@ export default function Admin() {
       setFormData({ ...formData, options: current.filter((k) => k !== kanji) });
     } else {
       setFormData({ ...formData, options: [...current, kanji] });
+    }
+  };
+
+  const handleFileUpload = async (e: { target: HTMLInputElement }) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append("image", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "x-passcode": "1234",
+        },
+        body: formDataUpload,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      setFormData({ ...formData, imagePath: data.imagePath });
+    } catch (err) {
+      console.error("Upload error:", err);
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -194,8 +229,34 @@ export default function Admin() {
                   <div>
                     <label className="block text-sm font-medium mb-2">
                       <Image className="w-4 h-4 inline mr-1" />
-                      {language === "ja" ? "画像パス" : "Image Path"}
+                      {language === "ja" ? "画像" : "Image"}
                     </label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        accept="image/*"
+                        className="hidden"
+                        data-testid="input-image-file"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        data-testid="button-upload-image"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {uploading
+                          ? language === "ja"
+                            ? "アップロード中..."
+                            : "Uploading..."
+                          : language === "ja"
+                            ? "画像をアップロード"
+                            : "Upload Image"}
+                      </Button>
+                    </div>
                     <input
                       type="text"
                       value={formData.imagePath || ""}
@@ -206,8 +267,8 @@ export default function Admin() {
                     />
                     <p className="text-sm text-muted-foreground mt-1">
                       {language === "ja"
-                        ? "例: /images/kanji-ki.png"
-                        : "Example: /images/kanji-ki.png"}
+                        ? "画像をアップロードするか、パスを直接入力"
+                        : "Upload an image or enter path directly"}
                     </p>
                     {formData.imagePath && (
                       <div className="mt-2 p-2 bg-slate-50 rounded-lg">
