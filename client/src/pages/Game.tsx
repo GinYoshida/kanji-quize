@@ -222,7 +222,7 @@ export default function Game() {
         </div>
 
         {/* Image Card */}
-        <div className="relative w-full max-w-md aspect-[4/3] bg-white rounded-3xl shadow-xl shadow-slate-200/50 border-8 border-white overflow-hidden">
+        <div className="relative w-full max-w-md aspect-[4/3] bg-white rounded-3xl shadow-xl shadow-slate-200/50 border-8 border-white overflow-hidden flex items-center justify-center">
           <AnimatePresence mode="wait">
             {currentImage && (
               <motion.img
@@ -233,7 +233,9 @@ export default function Game() {
                 transition={{ duration: 0.5 }}
                 src={currentImage}
                 alt="Question Image"
-                className="w-full h-full object-cover"
+                className={`object-contain rounded-md ${
+                  currentQuestion.imageKey === "tree" ? "w-80 h-auto" : "w-full h-full object-cover"
+                }`}
                 data-testid={`img-kanji-${currentQuestion.imageKey}`}
               />
             )}

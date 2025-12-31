@@ -82,7 +82,7 @@
     }
   ],
   "imageMap": {
-    "tree": "/assets/generated_images/kanji-illustration-for-tree.png",
+    "tree": "/images/kanji-ki.png",
     "mountain": "/assets/generated_images/kanji-illustration-for-mountain.png",
     "river": "/assets/generated_images/kanji-illustration-for-river.png"
   }
