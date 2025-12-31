@@ -1,0 +1,89 @@
+{
+  "quizzes": [
+    {
+      "id": 1,
+      "imageKey": "tree",
+      "kanji": "木",
+      "options": ["木", "山", "川"],
+      "translations": {
+        "ja": {
+          "question": "この絵は、どの漢字でしょう？",
+          "hint": "木が1本"
+        },
+        "en": {
+          "question": "What kanji is this picture?",
+          "hint": "One tree"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "imageKey": "mountain",
+      "kanji": "山",
+      "options": ["木", "山", "川"],
+      "translations": {
+        "ja": {
+          "question": "この絵は、どの漢字でしょう？",
+          "hint": "やま"
+        },
+        "en": {
+          "question": "What kanji is this picture?",
+          "hint": "A mountain"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "imageKey": "river",
+      "kanji": "川",
+      "options": ["木", "山", "川"],
+      "translations": {
+        "ja": {
+          "question": "この絵は、どの漢字でしょう？",
+          "hint": "かわ"
+        },
+        "en": {
+          "question": "What kanji is this picture?",
+          "hint": "A river"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "imageKey": "tree",
+      "kanji": "木",
+      "options": ["川", "木", "山"],
+      "translations": {
+        "ja": {
+          "question": "どの漢字が正しい？",
+          "hint": "木"
+        },
+        "en": {
+          "question": "Which kanji is correct?",
+          "hint": "Tree"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "imageKey": "mountain",
+      "kanji": "山",
+      "options": ["山", "川", "木"],
+      "translations": {
+        "ja": {
+          "question": "どの漢字が正しい？",
+          "hint": "やま"
+        },
+        "en": {
+          "question": "Which kanji is correct?",
+          "hint": "Mountain"
+        }
+      }
+    }
+  ],
+  "imageMap": {
+    "tree": "/assets/generated_images/kanji-illustration-for-tree.png",
+    "mountain": "/assets/generated_images/kanji-illustration-for-mountain.png",
+    "river": "/assets/generated_images/kanji-illustration-for-river.png"
+  }
+}
