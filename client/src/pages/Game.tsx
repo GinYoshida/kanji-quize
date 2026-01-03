@@ -10,6 +10,7 @@ import { useTextToSpeech } from "@/hooks/use-text-to-speech";
 import { useSound } from "@/hooks/use-sound";
 import { ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import type { QuizQuestion } from "@shared/schema";
+import { HelpGuide } from "@/components/HelpGuide";
 
 // Asset paths
 const IMG_SPINO = "/assets/generated_images/green-spinosaurus-boy.png";
@@ -265,6 +266,23 @@ export default function Game() {
         >
           <ArrowLeft className="w-6 h-6" />
         </Link>
+        <HelpGuide
+          language={language}
+          titleJa="クイズのあそびかた"
+          titleEn="Game Guide"
+          contentJa={[
+            "イラストにぴったりの漢字をえらんでね",
+            "スピーカーをおすと、もんだいをよんでくれるよ",
+            "まちがえても、もういちどえらべるよ",
+            "さいごまでがんばろう！"
+          ]}
+          contentEn={[
+            "Choose the kanji that best matches the picture.",
+            "Click the speaker icon to hear the question aloud.",
+            "If you make a mistake, you can try again.",
+            "Do your best until the end!"
+          ]}
+        />
         <div className="flex gap-2">
           {questions.map((_, idx) => (
             <div

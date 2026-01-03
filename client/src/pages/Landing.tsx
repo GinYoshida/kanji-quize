@@ -5,6 +5,7 @@ import { PasscodeEntry } from "@/components/PasscodeEntry";
 import { Play, BookOpen, LogIn } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/use-auth";
+import { HelpGuide } from "@/components/HelpGuide";
 
 const SPINOSAURUS_IMG = "/assets/generated_images/spinosaurus-painting.png";
 
@@ -36,29 +37,48 @@ export default function Landing() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden">
       {/* Language Selector */}
-      <div className="absolute top-6 right-6 flex gap-2 z-20">
-        <button
-          onClick={() => setLanguage("ja")}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-            language === "ja"
-              ? "bg-primary text-white shadow-lg"
-              : "bg-white text-muted-foreground hover:bg-slate-100"
-          }`}
-          data-testid="button-lang-ja"
-        >
-          日本語
-        </button>
-        <button
-          onClick={() => setLanguage("en")}
-          className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-            language === "en"
-              ? "bg-primary text-white shadow-lg"
-              : "bg-white text-muted-foreground hover:bg-slate-100"
-          }`}
-          data-testid="button-lang-en"
-        >
-          English
-        </button>
+      <div className="absolute top-6 right-6 flex items-center gap-4 z-20">
+        <HelpGuide
+          language={language}
+          titleJa="つかいかた"
+          titleEn="How to Play"
+          contentJa={[
+            "クイズをはじめるボタンをおしてね",
+            "イラストにぴったりの漢字をえらぼう",
+            "せいかいするとスピノがよろこぶよ！",
+            "ぜんぶおわったら進捗（しんちょく）をほぞんしてね"
+          ]}
+          contentEn={[
+            "Click the 'Start Quiz' button to begin.",
+            "Choose the kanji that matches the illustration.",
+            "Spino gets happy when you get it right!",
+            "When finished, don't forget to save your progress."
+          ]}
+        />
+        <div className="flex gap-2">
+          <button
+            onClick={() => setLanguage("ja")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              language === "ja"
+                ? "bg-primary text-white shadow-lg"
+                : "bg-white text-muted-foreground hover:bg-slate-100"
+            }`}
+            data-testid="button-lang-ja"
+          >
+            日本語
+          </button>
+          <button
+            onClick={() => setLanguage("en")}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+              language === "en"
+                ? "bg-primary text-white shadow-lg"
+                : "bg-white text-muted-foreground hover:bg-slate-100"
+            }`}
+            data-testid="button-lang-en"
+          >
+            English
+          </button>
+        </div>
       </div>
 
       {/* User status indicator */}
@@ -237,31 +257,6 @@ export default function Landing() {
       <footer className="absolute bottom-4 text-center w-full text-sm text-muted-foreground/60">
         {language === "ja" ? "小さな学習者のために愛を込めて" : "Made with love for little learners"}
       </footer>
-
-      <AboutSection language={language} />
     </div>
-  );
-}
-
-/**
- * AboutSection component provides a brief description of the application.
- */
-function AboutSection({ language }: { language: "ja" | "en" }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 1 }}
-      className="max-w-xl mx-auto mt-16 p-6 bg-white/40 backdrop-blur-sm rounded-3xl border border-white/20 text-center"
-    >
-      <h2 className="text-xl font-bold text-primary mb-3">
-        {language === "ja" ? "このアプリについて" : "About this App"}
-      </h2>
-      <p className="text-sm text-muted-foreground leading-relaxed">
-        {language === "ja" 
-          ? "「スピノ漢字クイズ」は、小さなお子様が楽しく遊びながら漢字に親しめるように作られた学習用アプリです。かわいいスピノサウルスのキャラクターと一緒に、イラストを見ながら正しい漢字を選ぶことで、自然と漢字の形や意味を覚えることができます。"
-          : "Spino Kanji Quiz is an educational app designed to help young children enjoy learning Japanese characters. By choosing the correct kanji for each illustration alongside our friendly Spinosaurus, children can naturally learn the shapes and meanings of kanji characters."}
-      </p>
-    </motion.div>
   );
 }

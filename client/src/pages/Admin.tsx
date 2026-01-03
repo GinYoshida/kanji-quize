@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Plus, Trash2, Save, X, Image, Upload } from "lucide-react";
 import type { QuizQuestion, InsertQuizQuestion } from "@shared/schema";
 import imageCompression from "browser-image-compression";
+import { HelpGuide } from "@/components/HelpGuide";
 
 import { ALL_KANJI, KANJI_BY_GRADE, GRADE_LABELS } from "@/data/kanji-catalog";
 
@@ -205,12 +206,31 @@ export default function Admin() {
               {language === "ja" ? "クイズ管理" : "Quiz Management"}
             </h1>
           </div>
-          {!showForm && (
-            <Button onClick={() => setShowForm(true)} data-testid="button-add-quiz">
-              <Plus className="w-4 h-4 mr-2" />
-              {language === "ja" ? "追加" : "Add"}
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            <HelpGuide
+              language={language}
+              titleJa="かんり画面のつかいかた"
+              titleEn="Admin Guide"
+              contentJa={[
+                "「追加」ボタンで新しいクイズをつくれます",
+                "正解の漢字と、ほかの2つの選択肢をえらんでね",
+                "画像は10MBまでOK。自動で小さくして保存するよ",
+                "「編集」ボタンで内容をいつでもなおせます"
+              ]}
+              contentEn={[
+                "Click 'Add' to create a new quiz question.",
+                "Choose the correct kanji and two other options.",
+                "Images up to 10MB are supported and will be auto-compressed.",
+                "Use the 'Edit' button to modify questions anytime."
+              ]}
+            />
+            {!showForm && (
+              <Button onClick={() => setShowForm(true)} data-testid="button-add-quiz">
+                <Plus className="w-4 h-4 mr-2" />
+                {language === "ja" ? "追加" : "Add"}
+              </Button>
+            )}
+          </div>
         </div>
 
         <AnimatePresence>
