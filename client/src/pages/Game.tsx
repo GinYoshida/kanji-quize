@@ -38,6 +38,20 @@ export default function Game() {
     cancel();
   }, [currentQuestionIndex, cancel]);
 
+  const questionText =
+    language === "ja"
+      ? questions[currentQuestionIndex]?.questionJa
+      : questions[currentQuestionIndex]?.questionEn;
+
+  useEffect(() => {
+    if (gameState === "playing" && questionText && isSupported) {
+      const timer = setTimeout(() => {
+        speak(questionText);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentQuestionIndex, gameState, questionText, isSupported, speak]);
+
   const currentQuestion = questions[currentQuestionIndex];
 
   // Helper to trigger confetti
@@ -179,8 +193,6 @@ export default function Game() {
   }
 
   const currentImage = currentQuestion.imagePath;
-  const questionText =
-    language === "ja" ? currentQuestion.questionJa : currentQuestion.questionEn;
 
   return (
     <div className="min-h-screen flex flex-col items-center p-4 md:p-8">
