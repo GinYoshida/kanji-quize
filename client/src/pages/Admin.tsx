@@ -23,6 +23,7 @@ export default function Admin() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<Partial<InsertQuizQuestion>>({
     kanji: "木",
@@ -131,26 +132,26 @@ export default function Admin() {
     if (!file) return;
 
     setUploading(true);
+    setError(null);
     try {
       const formDataUpload = new FormData();
       formDataUpload.append("image", file);
 
       const response = await fetch("/api/upload", {
         method: "POST",
-        headers: {
-          "x-passcode": "1234",
-        },
         body: formDataUpload,
       });
 
       if (!response.ok) {
-        throw new Error("Upload failed");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Upload failed");
       }
 
       const data = await response.json();
       setFormData({ ...formData, imagePath: data.imagePath });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Upload error:", err);
+      setError(err.message);
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
@@ -282,6 +283,9 @@ export default function Admin() {
                             : "Upload Image"}
                       </Button>
                     </div>
+                    {error && (
+                      <p className="text-sm text-red-500 mb-2">{error}</p>
+                    )}
                     {formData.imagePath && (
                       <div className="mt-2 p-2 bg-slate-50 rounded-lg">
                         <img
