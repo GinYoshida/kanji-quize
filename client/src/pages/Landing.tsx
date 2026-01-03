@@ -237,6 +237,31 @@ export default function Landing() {
       <footer className="absolute bottom-4 text-center w-full text-sm text-muted-foreground/60">
         {language === "ja" ? "小さな学習者のために愛を込めて" : "Made with love for little learners"}
       </footer>
+
+      <AboutSection language={language} />
     </div>
+  );
+}
+
+/**
+ * AboutSection component provides a brief description of the application.
+ */
+function AboutSection({ language }: { language: "ja" | "en" }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1 }}
+      className="max-w-xl mx-auto mt-16 p-6 bg-white/40 backdrop-blur-sm rounded-3xl border border-white/20 text-center"
+    >
+      <h2 className="text-xl font-bold text-primary mb-3">
+        {language === "ja" ? "このアプリについて" : "About this App"}
+      </h2>
+      <p className="text-sm text-muted-foreground leading-relaxed">
+        {language === "ja" 
+          ? "「スピノ漢字クイズ」は、小さなお子様が楽しく遊びながら漢字に親しめるように作られた学習用アプリです。かわいいスピノサウルスのキャラクターと一緒に、イラストを見ながら正しい漢字を選ぶことで、自然と漢字の形や意味を覚えることができます。"
+          : "Spino Kanji Quiz is an educational app designed to help young children enjoy learning Japanese characters. By choosing the correct kanji for each illustration alongside our friendly Spinosaurus, children can naturally learn the shapes and meanings of kanji characters."}
+      </p>
+    </motion.div>
   );
 }
