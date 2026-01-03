@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { PasscodeEntry } from "@/components/PasscodeEntry";
-import { Button } from "@/components/ui/button";
 import { Play, BookOpen, LogIn } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/use-auth";
@@ -11,26 +10,20 @@ const SPINOSAURUS_IMG = "/assets/generated_images/green-spinosaurus-boy.png";
 
 export default function Landing() {
   const [showPasscode, setShowPasscode] = useState(false);
-  const [passcodeMode, setPasscodeMode] = useState<"game" | "parents" | null>(null);
   const [, setLocation] = useLocation();
   const { language, setLanguage } = useLanguage();
   const { user, isLoading, isAuthenticated } = useAuth();
 
-  const handleModeSelect = (mode: "game" | "parents") => {
-    setPasscodeMode(mode);
+  const handleStartGame = () => {
+    setLocation("/game");
+  };
+
+  const handleParentsScreen = () => {
     setShowPasscode(true);
   };
 
   const handlePasscodeSuccess = () => {
-    if (!isAuthenticated) {
-      window.location.href = "/api/login";
-      return;
-    }
-    if (passcodeMode === "game") {
-      setLocation("/game");
-    } else {
-      setLocation("/logs");
-    }
+    setLocation("/logs");
   };
 
   const handleLogin = () => {
@@ -144,7 +137,7 @@ export default function Landing() {
               {isAuthenticated && (
                 <>
                   <button
-                    onClick={() => handleModeSelect("game")}
+                    onClick={handleStartGame}
                     className="
                       group relative w-full py-6 px-8 rounded-3xl
                       bg-gradient-to-r from-primary to-emerald-400
@@ -173,7 +166,7 @@ export default function Landing() {
                   </div>
 
                   <button
-                    onClick={() => handleModeSelect("parents")}
+                    onClick={handleParentsScreen}
                     className="
                       w-full py-4 px-6 rounded-2xl
                       bg-white border-2 border-border
