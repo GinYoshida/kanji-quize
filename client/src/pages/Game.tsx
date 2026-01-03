@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useLocation, useSearch } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { KanjiButton } from "@/components/KanjiButton";
@@ -14,8 +14,21 @@ import type { QuizQuestion } from "@shared/schema";
 // Asset paths
 const IMG_SPINO = "/assets/generated_images/green-spinosaurus-boy.png";
 
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 export default function Game() {
   const { data: dbQuestions, isLoading: dbLoading } = useActiveQuizzes();
+  const searchString = useSearch();
+  const maxParam = new URLSearchParams(searchString).get("max");
+  const maxQuestions = maxParam ? parseInt(maxParam, 10) : 0;
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [attemptedQuestions, setAttemptedQuestions] = useState<Set<number>>(new Set());
@@ -27,7 +40,16 @@ export default function Game() {
   const { speak, cancel, isSpeaking, isSupported } = useTextToSpeech({ language });
   const { playCorrect, playIncorrect } = useSound();
 
-  const questions: QuizQuestion[] = dbQuestions || [];
+  const questions: QuizQuestion[] = useMemo(() => {
+    if (!dbQuestions) return [];
+    const shuffled = shuffleArray(dbQuestions);
+    if (maxQuestions > 0 && maxQuestions < shuffled.length) {
+      return shuffled.slice(0, maxQuestions);
+    }
+    return shuffled;
+  }, [dbQuestions, maxQuestions]);
+
+  const [shuffledOptionsMap, setShuffledOptionsMap] = useState<Record<number, string[]>>({});
 
   useEffect(() => {
     if (!dbLoading && questions.length > 0) {
@@ -39,7 +61,14 @@ export default function Game() {
 
   useEffect(() => {
     cancel();
-  }, [currentQuestionIndex, cancel]);
+    const currentQ = questions[currentQuestionIndex];
+    if (currentQ && !shuffledOptionsMap[currentQuestionIndex]) {
+      setShuffledOptionsMap((prev) => ({
+        ...prev,
+        [currentQuestionIndex]: shuffleArray(currentQ.options),
+      }));
+    }
+  }, [currentQuestionIndex, cancel, questions, shuffledOptionsMap]);
 
   const questionText =
     language === "ja"
@@ -322,7 +351,7 @@ export default function Game() {
 
         {/* Options */}
         <div className="flex gap-4 md:gap-8 mt-4">
-          {currentQuestion.options.map((kanji) => (
+          {(shuffledOptionsMap[currentQuestionIndex] || currentQuestion.options).map((kanji) => (
             <KanjiButton
               key={kanji}
               kanji={kanji}

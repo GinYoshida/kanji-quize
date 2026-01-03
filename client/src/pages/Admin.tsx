@@ -8,7 +8,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Plus, Trash2, Save, X, Image, Upload } from "lucide-react";
 import type { QuizQuestion, InsertQuizQuestion } from "@shared/schema";
 
-const AVAILABLE_KANJI = ["木", "山", "川", "日", "月", "火", "水", "金", "土", "人", "口", "目"];
+import { ALL_KANJI, KANJI_BY_GRADE, GRADE_LABELS } from "@/data/kanji-catalog";
 
 export default function Admin() {
   const { language } = useLanguage();
@@ -182,11 +182,11 @@ export default function Admin() {
                       {language === "ja" ? "正解の漢字" : "Correct Kanji"}
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {AVAILABLE_KANJI.map((k) => (
+                      {ALL_KANJI.map((k) => (
                         <button
                           key={k}
                           onClick={() => setFormData({ ...formData, kanji: k })}
-                          className={`w-12 h-12 rounded-lg text-2xl font-bold transition-all ${
+                          className={`w-10 h-10 rounded-lg text-xl font-bold transition-all ${
                             formData.kanji === k
                               ? "bg-primary text-white shadow-lg"
                               : "bg-slate-100 hover:bg-slate-200"
@@ -204,11 +204,11 @@ export default function Admin() {
                       {language === "ja" ? "選択肢（3つ選んでください）" : "Options (select 3)"}
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {AVAILABLE_KANJI.map((k) => (
+                      {ALL_KANJI.map((k) => (
                         <button
                           key={k}
                           onClick={() => handleOptionToggle(k)}
-                          className={`w-12 h-12 rounded-lg text-2xl font-bold transition-all ${
+                          className={`w-10 h-10 rounded-lg text-xl font-bold transition-all ${
                             formData.options?.includes(k)
                               ? "bg-secondary text-secondary-foreground shadow"
                               : "bg-slate-100 hover:bg-slate-200"

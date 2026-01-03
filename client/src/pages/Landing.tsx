@@ -8,14 +8,17 @@ import { useAuth } from "@/hooks/use-auth";
 
 const SPINOSAURUS_IMG = "/assets/generated_images/green-spinosaurus-boy.png";
 
+const MAX_QUESTIONS_OPTIONS = [5, 10, 15, 0] as const;
+
 export default function Landing() {
   const [showPasscode, setShowPasscode] = useState(false);
+  const [maxQuestions, setMaxQuestions] = useState<number>(10);
   const [, setLocation] = useLocation();
   const { language, setLanguage } = useLanguage();
   const { user, isLoading, isAuthenticated } = useAuth();
 
   const handleStartGame = () => {
-    setLocation("/game");
+    setLocation(`/game?max=${maxQuestions}`);
   };
 
   const handleParentsScreen = () => {
@@ -136,6 +139,28 @@ export default function Landing() {
 
               {isAuthenticated && (
                 <>
+                  <div className="bg-white/80 backdrop-blur-sm p-4 rounded-2xl mb-4">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2 text-center">
+                      {language === "ja" ? "問題数" : "Number of Questions"}
+                    </label>
+                    <div className="flex gap-2 justify-center">
+                      {MAX_QUESTIONS_OPTIONS.map((num) => (
+                        <button
+                          key={num}
+                          onClick={() => setMaxQuestions(num)}
+                          className={`px-4 py-2 rounded-xl font-bold transition-all ${
+                            maxQuestions === num
+                              ? "bg-primary text-white shadow-lg"
+                              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                          }`}
+                          data-testid={`button-max-questions-${num}`}
+                        >
+                          {num === 0 ? (language === "ja" ? "全部" : "All") : num}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <button
                     onClick={handleStartGame}
                     className="
