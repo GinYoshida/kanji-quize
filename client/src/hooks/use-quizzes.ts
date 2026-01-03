@@ -2,18 +2,30 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { QuizQuestion, InsertQuizQuestion } from "@shared/schema";
 
+/**
+ * Custom hook to fetch all quiz questions for the current user.
+ * @returns React Query result containing array of quiz questions
+ */
 export function useQuizzes() {
   return useQuery<QuizQuestion[]>({
     queryKey: ["/api/quizzes"],
   });
 }
 
+/**
+ * Custom hook to fetch only active quiz questions.
+ * @returns React Query result containing array of active quiz questions
+ */
 export function useActiveQuizzes() {
   return useQuery<QuizQuestion[]>({
     queryKey: ["/api/quizzes/active"],
   });
 }
 
+/**
+ * Custom hook to create a new quiz question.
+ * @returns React Query mutation for creating a quiz
+ */
 export function useCreateQuiz() {
   return useMutation({
     mutationFn: async (quiz: InsertQuizQuestion) => {
@@ -27,6 +39,10 @@ export function useCreateQuiz() {
   });
 }
 
+/**
+ * Custom hook to update an existing quiz question.
+ * @returns React Query mutation for updating a quiz
+ */
 export function useUpdateQuiz() {
   return useMutation({
     mutationFn: async ({ id, updates }: { id: number; updates: Partial<InsertQuizQuestion> }) => {
@@ -40,6 +56,10 @@ export function useUpdateQuiz() {
   });
 }
 
+/**
+ * Custom hook to delete a quiz question.
+ * @returns React Query mutation for deleting a quiz
+ */
 export function useDeleteQuiz() {
   return useMutation({
     mutationFn: async (id: number) => {

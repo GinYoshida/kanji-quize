@@ -10,6 +10,9 @@ import type { QuizQuestion, InsertQuizQuestion } from "@shared/schema";
 
 import { ALL_KANJI, KANJI_BY_GRADE, GRADE_LABELS } from "@/data/kanji-catalog";
 
+/**
+ * The Admin component provides an interface for managing quiz questions.
+ */
 export default function Admin() {
   const { language } = useLanguage();
   const { data: quizzes, isLoading } = useQuizzes();
@@ -32,6 +35,9 @@ export default function Admin() {
     isActive: true,
   });
 
+  /**
+   * Resets the quiz form to its default state.
+   */
   const resetForm = () => {
     setFormData({
       kanji: "木",
@@ -47,6 +53,10 @@ export default function Admin() {
     setShowForm(false);
   };
 
+  /**
+   * Populates the form with existing quiz data for editing.
+   * @param quiz - The quiz question object to edit
+   */
   const handleEdit = (quiz: QuizQuestion) => {
     setFormData({
       kanji: quiz.kanji,
@@ -62,6 +72,9 @@ export default function Admin() {
     setShowForm(true);
   };
 
+  /**
+   * Handles the submission of the quiz form (create or update).
+   */
   const handleSubmit = async () => {
     const quizData: InsertQuizQuestion = {
       kanji: formData.kanji!,
@@ -86,12 +99,20 @@ export default function Admin() {
     }
   };
 
+  /**
+   * Deletes a quiz question after user confirmation.
+   * @param id - Unique identifier of the quiz to delete
+   */
   const handleDelete = async (id: number) => {
     if (confirm(language === "ja" ? "この問題を削除しますか？" : "Delete this question?")) {
       await deleteQuiz.mutateAsync(id);
     }
   };
 
+  /**
+   * Toggles a kanji option in the form's options array.
+   * @param kanji - The kanji character to toggle
+   */
   const handleOptionToggle = (kanji: string) => {
     const current = formData.options || [];
     if (current.includes(kanji)) {
@@ -101,6 +122,10 @@ export default function Admin() {
     }
   };
 
+  /**
+   * Handles image file upload to the server.
+   * @param e - File input change event
+   */
   const handleFileUpload = async (e: { target: HTMLInputElement }) => {
     const file = e.target.files?.[0];
     if (!file) return;

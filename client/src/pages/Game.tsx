@@ -14,6 +14,11 @@ import type { QuizQuestion } from "@shared/schema";
 // Asset paths
 const IMG_SPINO = "/assets/generated_images/green-spinosaurus-boy.png";
 
+/**
+ * Shuffles an array using the Fisher-Yates algorithm.
+ * @param array - The array to shuffle
+ * @returns A new shuffled array
+ */
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -23,6 +28,9 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
+/**
+ * The main Game component handles the quiz logic and user interaction.
+ */
 export default function Game() {
   const { data: dbQuestions, isLoading: dbLoading } = useActiveQuizzes();
   const searchString = useSearch();
@@ -86,7 +94,9 @@ export default function Game() {
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  // Helper to trigger confetti
+  /**
+   * Triggers a confetti explosion effect on the screen.
+   */
   const fireConfetti = () => {
     confetti({
       particleCount: 100,
@@ -96,6 +106,10 @@ export default function Game() {
     });
   };
 
+  /**
+   * Handles user's answer selection.
+   * @param kanji - The kanji character selected by the user
+   */
   const handleAnswer = (kanji: string) => {
     if (gameState !== "playing" || !currentQuestion) return;
 
@@ -132,6 +146,9 @@ export default function Game() {
     }
   };
 
+  /**
+   * Finalizes the game, saves the result to logs, and redirects to home.
+   */
   const handleFinish = async () => {
     try {
       await createLog.mutateAsync({
