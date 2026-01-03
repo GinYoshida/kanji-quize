@@ -18,6 +18,7 @@ export default function Game() {
   const { data: dbQuestions, isLoading: dbLoading } = useActiveQuizzes();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [attemptedQuestions, setAttemptedQuestions] = useState<Set<number>>(new Set());
   const [gameState, setGameState] = useState<"loading" | "playing" | "feedback" | "complete">("loading");
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   const [, setLocation] = useLocation();
@@ -71,8 +72,12 @@ export default function Game() {
 
     setGameState("feedback");
 
+    const isFirstAttempt = !attemptedQuestions.has(currentQuestionIndex);
+
     if (kanji === currentQuestion.kanji) {
-      setScore((s) => s + 1);
+      if (isFirstAttempt) {
+        setScore((s) => s + 1);
+      }
       setFeedback("correct");
       playCorrect();
       fireConfetti();
@@ -87,6 +92,7 @@ export default function Game() {
         }
       }, 2000);
     } else {
+      setAttemptedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
       setFeedback("incorrect");
       playIncorrect();
 
