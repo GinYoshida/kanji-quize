@@ -21,6 +21,116 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  constructor() {
+    this.seedDefaultQuizzes();
+  }
+
+  /**
+   * Seeds the database with default quiz questions if none exist.
+   * This ensures the published version has content immediately.
+   */
+  private async seedDefaultQuizzes() {
+    try {
+      const existing = await db.select().from(quizQuestions).limit(1);
+      if (existing.length === 0) {
+        console.log("Seeding default quiz questions...");
+        const defaultQuizzes: InsertQuizQuestion[] = [
+          {
+            kanji: "山",
+            options: ["木", "山", "川"],
+            imagePath: "/images/kanji-1767457029322-256273483.png",
+            questionJa: "この絵は、どの漢字でしょう？",
+            questionEn: "What kanji is this picture?",
+            hintJa: null,
+            hintEn: null,
+            isActive: true,
+            isGlobal: true,
+            ownerUserId: "52141230"
+          },
+          {
+            kanji: "川",
+            options: ["木", "川", "日"],
+            imagePath: "/images/kanji-1767458012418-286830973.png",
+            questionJa: "この絵は、どの漢字でしょう？",
+            questionEn: "What kanji is this picture?",
+            hintJa: null,
+            hintEn: null,
+            isActive: true,
+            isGlobal: true,
+            ownerUserId: "52141230"
+          },
+          {
+            kanji: "木",
+            options: ["木", "日", "月"],
+            imagePath: "/images/kanji-1767458046729-312304328.png",
+            questionJa: "この絵は、どの漢字でしょう？",
+            questionEn: "What kanji is this picture?",
+            hintJa: null,
+            hintEn: null,
+            isActive: true,
+            isGlobal: true,
+            ownerUserId: "52141230"
+          },
+          {
+            kanji: "一",
+            options: ["一", "三", "五"],
+            imagePath: "/images/kanji-1767458527057-57653435.png",
+            questionJa: "スピノサウルスの数はどれ？",
+            questionEn: "How many Spinosaurus?",
+            hintJa: null,
+            hintEn: null,
+            isActive: true,
+            isGlobal: true,
+            ownerUserId: "52141230"
+          },
+          {
+            kanji: "火",
+            options: ["火", "木", "水"],
+            imagePath: "/images/kanji-1767461622827-801016801",
+            questionJa: "この絵は、どの漢字でしょう？",
+            questionEn: "What kanji is this picture?",
+            hintJa: null,
+            hintEn: null,
+            isActive: true,
+            isGlobal: true,
+            ownerUserId: "52141230"
+          },
+          {
+            kanji: "二",
+            options: ["一", "三", "二"],
+            imagePath: "/images/kanji-1767462149179-264980170",
+            questionJa: "この絵は、どの漢字でしょう？",
+            questionEn: "What kanji is this picture?",
+            hintJa: null,
+            hintEn: null,
+            isActive: true,
+            isGlobal: true,
+            ownerUserId: "52141230"
+          },
+          {
+            kanji: "三",
+            options: ["三", "二", "四"],
+            imagePath: "/images/kanji-1767463251145-225352797",
+            questionJa: "この絵は、どの漢字でしょう？",
+            questionEn: "What kanji is this picture?",
+            hintJa: null,
+            hintEn: null,
+            isActive: true,
+            isGlobal: true,
+            ownerUserId: "52141230"
+          }
+        ];
+
+        for (const quiz of defaultQuizzes) {
+          await db.insert(quizQuestions).values(quiz);
+        }
+        console.log("Seeding complete.");
+      }
+    } catch (error) {
+      console.error("Error seeding default quizzes:", error);
+    }
+  }
+
   /**
    * Retrieves all learning logs for a specific user.
    * @param userId - Unique identifier of the user
