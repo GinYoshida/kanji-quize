@@ -1,34 +1,41 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
+import { APP_CONFIG } from "@shared/constants";
 
 interface PasscodeEntryProps {
   onSuccess: () => void;
 }
 
+/**
+ * 保護者画面に入るためのパスコード入力コンポーネント
+ */
 export function PasscodeEntry({ onSuccess }: PasscodeEntryProps) {
   const [code, setCode] = useState("");
-  const CORRECT_CODE = "1234";
+  const CORRECT_CODE = APP_CONFIG.parentPasscode;
 
   useEffect(() => {
+    // 4桁入力されたらチェックを開始
     if (code.length === 4) {
       if (code === CORRECT_CODE) {
+        // 正解なら成功時の処理を呼ぶ
         onSuccess();
       } else {
-        // Simple shake animation trigger could go here, 
-        // but for now we just clear it after a brief pause
+        // 間違いなら少し待ってから入力をクリア
         setTimeout(() => setCode(""), 500);
       }
     }
-  }, [code, onSuccess]);
+  }, [code, onSuccess, CORRECT_CODE]);
 
   return (
     <div className="flex flex-col items-center gap-6">
+      {/* 鍵アイコンと説明テキスト */}
       <div className="flex items-center gap-2 text-primary/80 mb-2">
         <Lock className="w-5 h-5" />
         <span className="text-sm font-medium uppercase tracking-wider">Secret Code Required</span>
       </div>
 
+      {/* 入力された数字を表示するドット部分 */}
       <div className="flex gap-4">
         {[0, 1, 2, 3].map((index) => (
           <motion.div
@@ -50,6 +57,7 @@ export function PasscodeEntry({ onSuccess }: PasscodeEntryProps) {
         ))}
       </div>
 
+      {/* 数字ボタンの並び（テンキー） */}
       <div className="grid grid-cols-3 gap-3 mt-4">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
           <button
@@ -64,7 +72,7 @@ export function PasscodeEntry({ onSuccess }: PasscodeEntryProps) {
             {num}
           </button>
         ))}
-        <div /> {/* Spacer */}
+        <div /> {/* レイアウト調整用の空白 */}
         <button
           onClick={() => setCode(prev => prev.length < 4 ? prev + "0" : prev)}
           className="
@@ -75,6 +83,7 @@ export function PasscodeEntry({ onSuccess }: PasscodeEntryProps) {
         >
           0
         </button>
+        {/* 一つ消すボタン */}
         <button
           onClick={() => setCode(prev => prev.slice(0, -1))}
           className="

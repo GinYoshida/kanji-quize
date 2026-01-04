@@ -12,6 +12,7 @@ import { ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import type { QuizQuestion } from "@shared/schema";
 import { HelpGuide } from "@/components/HelpGuide";
 import { t } from "@/lib/i18n";
+import { APP_CONFIG } from "@shared/constants";
 
 // Asset paths
 const IMG_SPINO_HAPPY = "/assets/spino-happy.png";
@@ -127,6 +128,7 @@ export default function Game() {
       playCorrect();
       fireConfetti();
 
+      // 正解時のフィードバック表示後に次の問題へ
       setTimeout(() => {
         setFeedback(null);
         if (currentQuestionIndex < questions.length - 1) {
@@ -135,16 +137,17 @@ export default function Game() {
         } else {
           setGameState("complete");
         }
-      }, 2000);
+      }, APP_CONFIG.feedbackDuration.correct);
     } else {
       setAttemptedQuestions((prev) => new Set(prev).add(currentQuestionIndex));
       setFeedback("incorrect");
       playIncorrect();
 
+      // 不正解時のフィードバック表示後にプレイ続行
       setTimeout(() => {
         setFeedback(null);
         setGameState("playing");
-      }, 1500);
+      }, APP_CONFIG.feedbackDuration.incorrect);
     }
   };
 

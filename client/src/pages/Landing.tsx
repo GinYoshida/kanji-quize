@@ -7,14 +7,15 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/use-auth";
 import { HelpGuide } from "@/components/HelpGuide";
 import { t } from "@/lib/i18n";
+import { APP_CONFIG } from "@shared/constants";
 
 const SPINOSAURUS_IMG = "/assets/generated_images/spinosaurus-painting.png";
 
-const MAX_QUESTIONS_OPTIONS = [5, 10, 15, 0] as const;
+const MAX_QUESTIONS_OPTIONS = APP_CONFIG.quizQuestionOptions;
 
 export default function Landing() {
   const [showPasscode, setShowPasscode] = useState(false);
-  const [maxQuestions, setMaxQuestions] = useState<number>(10);
+  const [maxQuestions, setMaxQuestions] = useState<number>(APP_CONFIG.defaultQuestionCount);
   const [, setLocation] = useLocation();
   const { language, setLanguage } = useLanguage();
   const { user, isLoading, isAuthenticated } = useAuth();
